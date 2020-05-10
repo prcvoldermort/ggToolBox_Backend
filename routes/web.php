@@ -17,3 +17,5 @@ Route::get('/', function () {
 
 // 测试api调用的路由
 Route::post('/getRequest', 'Api\BaiduPicRecognizeController@getRequest');
+// 获取识别种类的名称及描述
+Route::get('/getCategoryNameDesc', 'Api\BaiduPicRecognizeController@getCategoryNameDesc');

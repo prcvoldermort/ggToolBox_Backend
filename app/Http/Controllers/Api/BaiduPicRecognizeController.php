@@ -11,42 +11,62 @@ class BaiduPicRecognizeController extends Controller
 {
     // 识别图片的种类
     private $photoTypes = [
-        'animal', // 动物
-        'plant',  // 植物
-        'logo',   // Logo标志
-        'ingredient',  // 果蔬
-        'dish',  // 菜品
-        'redwine', // 红酒酒标
-        'currency',  // 货币
-        'landmark',  // 地标
-        'ocr_text_basic', // 通用文字识别
-        'ocr_idcard',  // 中国身份证
-        'ocr_business_license',  // 营业执照
-        'ocr_business_card', // 名片
-        'ocr_passport',  // 护照
-        'ocr_hkmacau', // 港澳通行证
-        'ocr_taiwan', // 台湾通行证
-        'ocr_household', // 中国户口本
-        'ocr_birth', // 出生证明
-        'ocr_vat_invoice', // 增值税发票
-        'ocr_quota_invoice', // 定额发票
-        'ocr_train_ticket', // 火车票
-        'ocr_taxi_receipt', // 出租车票
-        'ocr_air_ticket', // 机票行程单
-        'ocr_receipt', // 小票
-        'ocr_vehicle_license', // 行驶证
-        'ocr_driving_license', // 驾驶证
-        'ocr_handwriting', // 手写文字识别
+        'animal' => ['name' => '动物图片识别', 'desc' => '上传一张动物图片,告诉你是什么动物'], // 动物
+        'plant' => ['name' => '植物图片识别', 'desc' => '上传一张植物图片,告诉你是什么植物'],  // 植物
+        'logo' => ['name' => 'logo图片识别', 'desc' => '上传一张logo图片,告诉你是什么logo'],   // Logo标志
+        'ingredient' => ['name' => '果蔬图片识别', 'desc' => '上传一张果蔬图片,告诉你是什么果蔬'],  // 果蔬
+        'dish' => ['name' => '菜品图片识别', 'desc' => '上传一张菜品图片,告诉你是什么菜品'],  // 菜品
+        'redwine' => ['name' => '红酒酒标图片识别', 'desc' => '上传一张红酒酒标图片,告诉你红酒的信息'], // 红酒酒标
+        'currency' => ['name' => '货币图片识别', 'desc' => '上传一张钱的图片,告诉你是哪国的钱'],  // 货币
+        'landmark' => ['name' => '地标图片识别', 'desc' => '上传一张地标建筑的图片,告诉你是什么建筑'],  // 地标
+        'ocr_text_basic' => ['name' => '文字识别', 'desc' => '上传一张带文字的图片,识别出图片中的文字'], // 通用文字识别
+        'ocr_idcard' => ['name' => '身份证图片识别', 'desc' => '上传一张身份证图片,识别出身份证上的信息'],  // 中国身份证
+        'ocr_business_license' => ['name' => '营业执照图片识别', 'desc' => '上传一张营业执照图片,识别出上面的信息'],  // 营业执照
+        'ocr_business_card' => ['name' => '名片图片识别', 'desc' => '上传一张名片图片,识别出上面的信息'], // 名片
+        'ocr_passport' => ['name' => '护照图片识别', 'desc' => '上传一张护照图片,识别出上面的信息'],  // 护照
+        'ocr_hkmacau' => ['name' => '港澳通行证图片识别', 'desc' => '上传一张港澳通行证图片,识别出上面的信息'], // 港澳通行证
+        'ocr_taiwan' => ['name' => '台湾通行证图片识别', 'desc' => '上传一张台湾通行证图片,识别出上面的信息'], // 台湾通行证
+        'ocr_household' => ['name' => '户口本图片识别', 'desc' => '上传一张户口本图片,识别出上面的信息'], // 中国户口本
+        'ocr_birth' => ['name' => '出生证明图片识别', 'desc' => '上传一张出生证明图片,识别出上面的信息'], // 出生证明
+        'ocr_vat_invoice' => ['name' => '增值税发票图片识别', 'desc' => '上传一张增值税发票图片,识别出上面的信息'], // 增值税发票
+        'ocr_quota_invoice' => ['name' => '定额发票图片识别', 'desc' => '上传一张定额发票图片,识别出上面的信息'], // 定额发票
+        'ocr_train_ticket' => ['name' => '火车票图片识别', 'desc' => '上传一张火车票图片,识别出上面的信息'], // 火车票
+        'ocr_taxi_receipt' => ['name' => '出租车票图片识别', 'desc' => '上传一张出租车票图片,识别出上面的信息'], // 出租车票
+        'ocr_air_ticket' => ['name' => '机票行程单图片识别', 'desc' => '上传一张机票行程单图片,识别出上面的信息'], // 机票行程单
+        'ocr_receipt' => ['name' => '超市小票图片识别', 'desc' => '上传一张超市小票图片,识别出上面的信息'], // 小票
+        'ocr_vehicle_license' => ['name' => '行驶证图片识别', 'desc' => '上传一张行驶证图片,识别出上面的信息'], // 行驶证
+        'ocr_driving_license' => ['name' => '驾驶证图片识别', 'desc' => '上传一张驾驶证图片,识别出上面的信息'], // 驾驶证
+        'ocr_handwriting' => ['name' => '手写文字识别', 'desc' => '上传一张手写文字图片，识别出上面的文字'], // 手写文字识别
     ];
+
+    /**
+     * 根据传入的识别类型的代码,返回该类型的名称及描述信息
+     */
+    public function getCategoryNameDesc(Request $request) {
+        try {
+            $categoryCode = $request->get('category');
+            if (isset($categoryCode)) {
+                if (array_key_exists($categoryCode, $this->photoTypes)) {
+                    return response()->json($this->photoTypes[$categoryCode]);
+                } else {
+                    throw new \Exception('类型代码错误！');
+                }
+            } else {
+                throw new \Exception('种类代码不能为空！');
+            }
+        } catch (\Exception $e) {
+            return response($e->getMessage(), 500);
+        }
+    }
     /**
      * 接收客户端识别请求的方法
      */
     public function getRequest(Request $request) {
         try {
             $photoType = $request->get('photo_type');
-            if (!in_array($photoType, $this->photoTypes)) {
-                throw new \Exception('非法图片类型！');
-            }
+            // if (!in_array($photoType, $this->photoTypes)) {
+            //     throw new \Exception('非法图片类型！');
+            // }
             $accessToken = Redis::get('baiduAPIAccessToken');
             if (!isset($accessToken)) {
                 // Redis中baiduAPIAccessToken过期，需要请求接口刷新token
@@ -517,7 +537,7 @@ class BaiduPicRecognizeController extends Controller
         ];
         $responseBody = $this->sendHttpPostRequest($url, $formParamsArray);
         $responseObject = \json_decode($responseBody, true);
-        $result = $responseObject['data']['words_result'];
+        $result = $responseObject['words_result'];
         return $result;
     }
 
@@ -531,7 +551,7 @@ class BaiduPicRecognizeController extends Controller
         ];
         $responseBody = $this->sendHttpPostRequest($url, $formParamsArray);
         $responseObject = \json_decode($responseBody, true);
-        $result = $responseObject['data']['words_result'];
+        $result = $responseObject['words_result'];
         return $result;
     }
 
